@@ -398,34 +398,33 @@ class ListProducWindows(QWidget, ListProductForm):
         estilo_titulo = ParagraphStyle('Titulo', fontSize=18, alignment=TA_CENTER, spaceAfter=0.5*cm)
         estilo_texto = ParagraphStyle('Texto', fontSize=16, alignment=TA_LEFT, spaceAfter=0.2*cm)
 
+        logo_path = './assets/logo.png'
+        logo = Image(str(logo_path), width=6.5*cm, height=1.5*cm)
+        logo.hAlign = 'CENTER'
+
         elementos = [
-            Paragraph("<b>VARIEDADES</b>", estilo_titulo),
-            Paragraph("<b>° LA 40 °</b>", estilo_titulo),
+            logo,
             Paragraph("<b>Factura de Venta</b>", estilo_titulo),
             Paragraph(f"Nro factura: {nro_consecutivo}", estilo_texto),
             Paragraph(f"Fecha: {fecha_actual_str}", estilo_texto),
-            Paragraph(f"Nit: 8409905-7", estilo_texto),
-            Paragraph(f"Cel: 313 399 9374", estilo_texto),
-            Paragraph("Direccion: Cll 38ASUR N 39 - 76", estilo_texto),
-            Paragraph(f"<b>Cliente:</b> {name[0]}", estilo_texto),
-            Paragraph(f"<b>Documento:</b> {document[0]}", estilo_texto),
+            Paragraph(f"Nit: 1037651327-1", estilo_texto),
+            Paragraph("Direccion: Calle 48 # 04 06 Copacabana", estilo_texto),
+            Paragraph(f"Cliente: {name[0]}", estilo_texto),
+            Paragraph(f"Documento: {document[0]}", estilo_texto),
             Spacer(1, 0.2*cm),
             Paragraph("<b>Productos:</b>", estilo_texto),
         ]
 
         estilo_nombre_producto = ParagraphStyle('NombreProducto', fontSize=16, alignment=TA_LEFT, spaceAfter=0.2*cm)
 
-        # Estilo para la cantidad y precio
         estilo_cantidad_precio = ParagraphStyle('CantidadPrecio', fontSize=14, alignment=TA_LEFT, spaceAfter=0.5*cm)
-
-        # Agregar productos a la factura
+        
         for producto in productos_vendidos:
             elementos.append(Spacer(1, 0.2*cm))
-            # Nombre del producto
+            
             nombre_producto = Paragraph(f"<b>{producto['nombre']}</b>", estilo_nombre_producto)
             elementos.append(nombre_producto)
             
-            # Cantidad y precio
             cantidad_precio = Paragraph(f"Cantidad: {producto['cantidad']} - Precio: {producto['precio_unitario']}", estilo_cantidad_precio)
             elementos.append(cantidad_precio)
 
