@@ -1,6 +1,6 @@
 import sqlite3 
 from sqlite3 import Error
-from .connection import create_connection, query_turso2 ,query_turso
+from .connection import query_turso2 ,query_turso
 
 # def insert_sell(data):
 #     conn = create_connection()

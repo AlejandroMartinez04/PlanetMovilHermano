@@ -23,8 +23,8 @@ load_dotenv()
 TURSO_DB_URL = os.getenv("TURSO_DB_URL")
 TURSO_DB_AUTH_TOKEN = os.getenv("TURSO_DB_AUTH_TOKEN")
 
-def create_connection():
-    return TURSO_DB_URL, TURSO_DB_AUTH_TOKEN
+# def create_connection():
+#     return TURSO_DB_URL, TURSO_DB_AUTH_TOKEN
 
 def query_turso(query):
     headers = {
@@ -44,6 +44,7 @@ def query_turso(query):
     response = requests.post(TURSO_DB_URL, headers=headers, json=body)
     
     if response.status_code == 200:
+        print("Conexion a la base de datos exitosa", response.status_code)
         return response.json()  # Devuelve el resultado de la consulta
     else:
         print("Error en la consulta:", response.status_code, response.text)
@@ -68,6 +69,7 @@ def query_turso2(query, data):
     response = requests.post(TURSO_DB_URL, headers=headers, json=body)
     
     if response.status_code == 200:
+        print("Conexion a la base de datos exitosa", response.status_code)
         return response.json()  # Devuelve el resultado de la consulta
     else:
         print("Error en la consulta:", response.status_code, response.text)

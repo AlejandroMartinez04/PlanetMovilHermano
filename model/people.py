@@ -1,6 +1,6 @@
 import sqlite3 
 from sqlite3 import Error
-from .connection import create_connection, query_turso
+from .connection import query_turso
 
 
 ### para DB en la nube
@@ -51,5 +51,7 @@ def select_by_id(id):
             row = results['rows'][0]
             result_dict = {columns[i]: row[i] for i in range(len(columns))}
             return result_dict  # Devuelve el diccionario
+        else:
+            print("Error enviando datos a la base de datos")
 
     return None  # Si no hay resultados, devuelve None
