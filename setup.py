@@ -18,5 +18,5 @@ setup(
 
 # python setup.py build_exe --zip-include-packages=encodings,PySide6 -----COMANDO PARA CREAR .EXE
 
-# pyinstaller --onefile --add-data "assets;assets" --add-data "pys6_msgBoxes;pys6_msgBoxes" app.py ----COMANDO PARA CREAR .EXE
+# pyinstaller --onefile --add-data "assets;assets" --add-data ".env;." --add-data "pys6_msgBoxes;pys6_msgBoxes" app.py ----COMANDO PARA CREAR .EXE
 

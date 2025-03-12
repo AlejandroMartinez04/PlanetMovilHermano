@@ -1,30 +1,26 @@
-# import sqlite3
-# from sqlite3 import Error
-
-# def create_connection():
-
-#     try:
-#         conn = sqlite3.connect('databaseProducts.db')
-#         return conn
-#     except Error as e:
-#         print("Error connecting to db: " + str(e))
-
-
 ### ------------------para db en la nube ------------------------#####
 
 import os
 import requests
+import sys
 from dotenv import load_dotenv
 
+def resource_path(relative_path):
+    """Devuelve la ruta absoluta de un recurso, empaquetado o no."""
+    try:
+        base_path = sys._MEIPASS  # Cuando está empaquetado
+    except AttributeError:
+        base_path = os.path.abspath(".")  # En desarrollo
+    return os.path.join(base_path, relative_path)
+
+env_path = resource_path(".env")
+
 # Cargar variables de entorno
-load_dotenv()
+load_dotenv(dotenv_path=env_path)
 
-# Obtener la URL y el token de autenticación
-TURSO_DB_URL = os.getenv("TURSO_DB_URL")
+# Acceso a las variables
 TURSO_DB_AUTH_TOKEN = os.getenv("TURSO_DB_AUTH_TOKEN")
-
-# def create_connection():
-#     return TURSO_DB_URL, TURSO_DB_AUTH_TOKEN
+TURSO_DB_URL = os.getenv("TURSO_DB_URL")
 
 def query_turso(query):
     headers = {
