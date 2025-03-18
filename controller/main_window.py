@@ -175,22 +175,30 @@ class ListProducWindows(QWidget, ListProductForm):
     def search_product_by_barcode(self, Codigo_barras):
         data = select_product_by_id_search(Codigo_barras)
         self.populate_table(data)
+        return data
 
     def search_any(self):
-        parameter = self.lineEditSearch.text()
+        
+        parameter = self.lineEditSearch.text().strip()
 
         if parameter == "":
             #msg_boxes.warning_msg_box('Aviso!','Debe escribir lo que desea buscar')
             self.do_sell()
         else:
-            if parameter:
+
+            dataCode = self.search_product_by_barcode(parameter)
+            print(dataCode)
+
+            if not dataCode:
+                self.search_product_by_name(parameter)
+            else:
                 self.search_product_by_barcode(parameter)
                 self.ListProductTable.selectRow(0)
                 self.agregar_carrito_table_click()
-            else:
-                self.search_product_by_name(parameter)
-        self.lineEditSearch.clear()
                 
+        self.lineEditSearch.clear()
+
+
     def records_qty(self):
         qty_rows = str(self.ListProductTable.rowCount())
         self.labelQty.setText(qty_rows)
@@ -234,7 +242,7 @@ class ListProducWindows(QWidget, ListProductForm):
             product_id = self.ListProductTable.item(row, 4).text()
             data = select_product_by_id(product_id)
             data_normal = data[0]
-            name = data_normal[0]
+            name = data_normal[1]
             qty__stock = int(data_normal[2])
 
             while True:
