@@ -4,7 +4,7 @@ from view.main_windows import ListProductForm
 from model.products import select_all_products, select_product_by_id, select_product_by_name, delete_product, update_qty_product, select_product_by_id_search
 from model.sells import select_all_sells, insert_sell, select_sell_by_date
 from pys6_msgBoxes import msg_boxes
-from pys6_msgBoxes.input_box import input_msg_box
+from pys6_msgBoxes.input_box import input_msg_box, resource_path
 
 import os
 import platform
@@ -180,9 +180,10 @@ class ListProducWindows(QWidget, ListProductForm):
         parameter = self.lineEditSearch.text()
 
         if parameter == "":
-            msg_boxes.warning_msg_box('Aviso!','Debe escribir lo que desea buscar')
+            #msg_boxes.warning_msg_box('Aviso!','Debe escribir lo que desea buscar')
+            self.do_sell()
         else:
-            if parameter.isdigit():
+            if parameter:
                 self.search_product_by_barcode(parameter)
                 self.ListProductTable.selectRow(0)
                 self.agregar_carrito_table_click()
@@ -230,11 +231,11 @@ class ListProducWindows(QWidget, ListProductForm):
         selected_items = self.ListProductTable.selectedItems()
         if selected_items:
             row = selected_items[0].row()
-            product_id = int(self.ListProductTable.item(row, 4).text())
+            product_id = self.ListProductTable.item(row, 4).text()
             data = select_product_by_id(product_id)
             data_normal = data[0]
             name = data_normal[0]
-            qty__stock = int(data_normal[1])
+            qty__stock = int(data_normal[2])
 
             while True:
                 quantity = QInputDialog.getText(None, "Cantidad de productos", "Introduce la cantidad:")
@@ -398,7 +399,8 @@ class ListProducWindows(QWidget, ListProductForm):
         estilo_titulo = ParagraphStyle('Titulo', fontSize=18, alignment=TA_CENTER, spaceAfter=0.5*cm)
         estilo_texto = ParagraphStyle('Texto', fontSize=16, alignment=TA_LEFT, spaceAfter=0.2*cm)
 
-        logo_path = './assets/logo.png'
+        # logo_path = './assets/logo.png'
+        logo_path = resource_path("assets/logo.png")
         logo = Image(str(logo_path), width=6.5*cm, height=1.5*cm)
         logo.hAlign = 'CENTER'
 
@@ -511,9 +513,9 @@ class ListProducWindows(QWidget, ListProductForm):
                 qty_selled = int(item.text())
                 product_id = item_id.text()
                 product = select_product_by_id(product_id)
-                new_id = int(product_id)
+                new_id = product_id
                 data = product[0]
-                old_stock = int(data[1])
+                old_stock = int(data[2])
                 new_stock = old_stock - qty_selled
                 update_qty_product(new_id, new_stock)
         self.populate_table(select_all_products())

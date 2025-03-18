@@ -3,7 +3,7 @@ from sqlite3 import Error
 from .connection import query_turso, query_turso2
 
 def select_all_products():
-    query = "SELECT Nombre, Cantidad, Precio_ingreso, Precio, Id_producto, Proveedor FROM products"
+    query = "SELECT Nombre, Cantidad, Precio_ingreso, Precio, Id_producto, Proveedor FROM ProductsV2"
     data = query_turso(query)
     
     # Verifica que data no esté vacío y que contenga el primer elemento
@@ -18,9 +18,8 @@ def select_all_products():
 
 
 def select_product_by_id(Id_producto):
-    query = f"SELECT Nombre, Cantidad, Precio_ingreso, Precio, Id_producto, Ganancia FROM products WHERE Id_producto = {Id_producto}"
+    query = f"SELECT Id_producto, Nombre, Cantidad, Precio_ingreso, Precio, Ganancia FROM ProductsV2 WHERE Id_producto = '{Id_producto}'"
     data = query_turso(query)
-    
     # Verifica que data no esté vacío y que contenga el primer elemento
     if data and isinstance(data, list) and len(data) > 0 and 'results' in data[0]:
         results = data[0]['results']  # Acceder al primer elemento de la lista
@@ -33,7 +32,7 @@ def select_product_by_id(Id_producto):
 
 
 def select_product_by_id_search(Id_producto):
-    query = f"SELECT Nombre, Cantidad, Precio_ingreso, Precio, Id_producto, Proveedor FROM products WHERE Id_producto = {Id_producto}"
+    query = f"SELECT Nombre, Cantidad, Precio_ingreso, Precio, Id_producto, Proveedor FROM ProductsV2 WHERE Id_producto = '{Id_producto}'"
     data = query_turso(query)
     
     # Verifica que data no esté vacío y que contenga el primer elemento
@@ -47,7 +46,7 @@ def select_product_by_id_search(Id_producto):
     return []  # Si no hay resultados, devuelve una lista vacía
 
 def select_product_by_name(nombre):
-    query = f"SELECT Nombre, Cantidad, Precio_ingreso, Precio, Id_producto, Proveedor FROM products WHERE Nombre LIKE '%{nombre}%'"
+    query = f"SELECT Nombre, Cantidad, Precio_ingreso, Precio, Id_producto, Proveedor FROM ProductsV2 WHERE Nombre LIKE '%{nombre}%'"
     data = query_turso(query)
     
     # Verifica que data no esté vacío y que contenga el primer elemento
@@ -61,7 +60,7 @@ def select_product_by_name(nombre):
     return []  # Si no hay resultados, devuelve una lista vacía
 
 def insert_product(data):
-    sql = f""" INSERT INTO products (Id_producto, Nombre, Cantidad, Precio_ingreso, Precio, Ganancia, Proveedor) 
+    sql = f""" INSERT INTO ProductsV2 (Id_producto, Nombre, Cantidad, Precio_ingreso, Precio, Ganancia, Proveedor) 
     VALUES(?,?,?,?,?,?,?)"""
 
     try:
@@ -77,7 +76,7 @@ def insert_product(data):
         return False  # Devolver False en caso de error
     
 def delete_product(Id_producto):
-    sql = f"DELETE FROM products WHERE Id_producto = {Id_producto}"
+    sql = f"DELETE FROM ProductsV2 WHERE Id_producto = {Id_producto}"
    
     try:
         delete_success = query_turso(sql)
@@ -91,7 +90,7 @@ def delete_product(Id_producto):
         return False
 
 def update_product(Id_producto, data):
-    sql = f""" UPDATE Products SET 
+    sql = f""" UPDATE ProductsV2 SET 
                                 Nombre = ?, 
                                 Cantidad = ?, 
                                 Precio_ingreso = ?,
@@ -112,7 +111,7 @@ def update_product(Id_producto, data):
         return False  # Devolver False en caso de error
     
 def update_qty_product(Id_producto, data):
-    sql = f""" UPDATE Products SET 
+    sql = f""" UPDATE ProductsV2 SET 
                                 Cantidad = {data}
                 WHERE Id_producto = {Id_producto}"""
     
