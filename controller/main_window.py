@@ -101,7 +101,7 @@ class ListProducWindows(QWidget, ListProductForm):
         if selected_row:
             valor_ingresado = input_msg_box("Ingresar contraseña", "Ingresa la contraseña:")
             if valor_ingresado == '0827':
-                product_id = int(selected_row[4].text())
+                product_id = selected_row[4].text()
                 row = selected_row[0].row()
                 if delete_product(product_id):
                     self.ListProductTable.removeRow(row)

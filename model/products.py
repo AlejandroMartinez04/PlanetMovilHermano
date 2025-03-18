@@ -76,7 +76,9 @@ def insert_product(data):
         return False  # Devolver False en caso de error
     
 def delete_product(Id_producto):
-    sql = f"DELETE FROM ProductsV2 WHERE Id_producto = {Id_producto}"
+    sql = f"DELETE FROM ProductsV2 WHERE Id_producto = '{Id_producto}'"
+
+    print(sql)
    
     try:
         delete_success = query_turso(sql)
