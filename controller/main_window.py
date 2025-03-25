@@ -187,7 +187,7 @@ class ListProducWindows(QWidget, ListProductForm):
         else:
 
             dataCode = self.search_product_by_barcode(parameter)
-            print(dataCode)
+            # print(dataCode)
 
             if not dataCode:
                 self.search_product_by_name(parameter)
@@ -216,25 +216,6 @@ class ListProducWindows(QWidget, ListProductForm):
             total = self.sum_last_column()
             self.lineEditSell.setText(total)
 
-    def agregar_carrito_table_scanner(self, datos):
-        data = 0
-        if data == 0:
-            data_normal = datos[0]
-            name = data_normal[0]
-            qty = 1
-            price = data_normal[3]
-            price_without_format = int(price.replace(",", ""))
-            code = data_normal[4]
-            price_neto = qty * price_without_format
-            precio_neto_format = self.agregar_punto_miles(price_neto)
-
-            data_full = [(code, name, qty, price, precio_neto_format)]
-            self.populate_table2(data_full)
-        self.ListProductTable.clearSelection()
-        total = self.sum_last_column()
-        self.lineEditSell.setText(total)
-
-
     def agregar_carrito_table_click(self):
         selected_items = self.ListProductTable.selectedItems()
         if selected_items:
@@ -254,7 +235,7 @@ class ListProducWindows(QWidget, ListProductForm):
                     msg_boxes.warning_msg_box('Aviso!','La cantidad es mayor que la cantidad existente. Inténtelo nuevamente.')
             
             qty = int(quantity[0])
-            price = str(data_normal[3])
+            price = str(data_normal[4])
             if len(price) > 3:
                 price_without_format = int(price.replace(",", ""))
                 code = product_id
