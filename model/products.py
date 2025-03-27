@@ -77,8 +77,6 @@ def insert_product(data):
     
 def delete_product(Id_producto):
     sql = f"DELETE FROM ProductsV2 WHERE Id_producto = '{Id_producto}'"
-
-    print(sql)
    
     try:
         delete_success = query_turso(sql)
