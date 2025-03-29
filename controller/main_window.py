@@ -433,11 +433,6 @@ class ListProducWindows(QWidget, ListProductForm):
             if factura_path .exists():
                 print("El archivo de factura creado en la ubicación especificada.")
                 msg_boxes.correct_msg_box('Correcto!','Factura creada')
-
-                respuesta_imprimir = msg_boxes.warning_check_msg_box('Imprimir factura', '¿Desea imprimir la factura?')
-                if respuesta_imprimir == QMessageBox.Yes:
-                    self.imprimir_factura(factura_path)
-
             else:
                 print("Error: El archivo de factura no se creo en la ubicación especificada.")
         except Exception as e:
@@ -490,7 +485,9 @@ class ListProducWindows(QWidget, ListProductForm):
                 self.update_qty_product_form()
                 msg_boxes.correct_msg_box('Correcto!','Se realizó la venta')
                 self.clean_table_sells()
-                self.generar_factura_venta(self, monto_total, productos_vendidos)
+                respuesta_imprimir = msg_boxes.warning_check_msg_box('Imprimir factura', '¿Desea imprimir la factura?')
+                if respuesta_imprimir == QMessageBox.Yes:
+                    self.generar_factura_venta(self, monto_total, productos_vendidos)
         else :
             msg_boxes.warning_msg_box('Aviso!','No hay productos en el carrito')
 
