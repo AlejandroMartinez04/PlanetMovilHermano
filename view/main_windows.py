@@ -105,14 +105,6 @@ class ListProductForm(object):
 
         self.horizontalLayout_2.addWidget(self.searchButton)
 
-        self.frame_3 = QFrame(ListProductForm)
-        self.frame_3.setObjectName(u"frame_3")
-        self.frame_3.setFrameShape(QFrame.StyledPanel)
-        self.frame_3.setFrameShadow(QFrame.Raised)
-
-        self.horizontalLayout_2.addWidget(self.frame_3)
-
-
         self.gridLayout_4.addLayout(self.horizontalLayout_2, 1, 0, 1, 1)
 
         self.label_11 = QLabel(ListProductForm)
@@ -555,7 +547,6 @@ class ListProductForm(object):
         ListProductForm.setWindowTitle(QCoreApplication.translate("ListProductForm", u"Lista de productos", None))
         self.label.setText(QCoreApplication.translate("ListProductForm", u"Busca productos por nombre  \u00f3 codigo:", None))
         self.searchButton.setText("")
-        self.frame_3.setStyleSheet(QCoreApplication.translate("ListProductForm", u"font: 700 11pt \"Segoe UI\";", None))
         self.label_11.setText(QCoreApplication.translate("ListProductForm", u"Tabla productos", None))
         self.label_8.setText(QCoreApplication.translate("ListProductForm", u"Cantidad de productos:", None))
         self.frame.setStyleSheet(QCoreApplication.translate("ListProductForm", u"font: 700 11pt \"Segoe UI\";", None))

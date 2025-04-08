@@ -260,14 +260,6 @@ class ListProductFormEmployee(object):
 
         self.horizontalLayout_2.addWidget(self.searchButton)
 
-        self.frame_3 = QFrame(ListProductForm)
-        self.frame_3.setObjectName(u"frame_3")
-        self.frame_3.setFrameShape(QFrame.StyledPanel)
-        self.frame_3.setFrameShadow(QFrame.Raised)
-
-        self.horizontalLayout_2.addWidget(self.frame_3)
-
-
         self.gridLayout_4.addLayout(self.horizontalLayout_2, 1, 0, 1, 1)
 
         self.ListProductTable = QTableWidget(ListProductForm)
@@ -318,26 +310,6 @@ class ListProductFormEmployee(object):
         self.verticalLayout_3 = QVBoxLayout()
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.verticalLayout_3.setSizeConstraint(QLayout.SetFixedSize)
-        self.escanearButton = QPushButton(ListProductForm)
-        self.escanearButton.setObjectName(u"escanearButton")
-        self.escanearButton.setEnabled(True)
-        sizePolicy.setHeightForWidth(self.escanearButton.sizePolicy().hasHeightForWidth())
-        self.escanearButton.setSizePolicy(sizePolicy)
-        self.escanearButton.setMinimumSize(QSize(0, 80))
-        self.escanearButton.setMaximumSize(QSize(150, 16777215))
-        self.escanearButton.setCursor(QCursor(Qt.PointingHandCursor))
-        self.escanearButton.setAutoFillBackground(False)
-        self.escanearButton.setStyleSheet(u"font: 700 11pt \"Segoe UI\";")
-        self.escanearButton.setInputMethodHints(Qt.ImhNone)
-        icon7employee = resource_path("assets/newicons/icons8-esc\u00e1ner-de-c\u00f3digo-de-barras-48.png")
-        icon = QIcon()
-        icon.addFile(icon7employee, QSize(), QIcon.Normal, QIcon.Off)
-        self.escanearButton.setIcon(icon)
-        self.escanearButton.setIconSize(QSize(50, 50))
-        self.escanearButton.setAutoDefault(False)
-        self.escanearButton.setFlat(True)
-
-        self.verticalLayout_3.addWidget(self.escanearButton)
 
         self.label_6 = QLabel(ListProductForm)
         self.label_6.setObjectName(u"label_6")
@@ -414,7 +386,6 @@ class ListProductFormEmployee(object):
         self.retranslateUi(ListProductForm)
 
         self.inicioButton.setDefault(False)
-        self.escanearButton.setDefault(False)
 
 
         QMetaObject.connectSlotsByName(ListProductForm)
@@ -436,11 +407,8 @@ class ListProductFormEmployee(object):
         self.label_10.setText(QCoreApplication.translate("ListProductForm", u"Copyright \u00a9 2023 AlejandroMartinez", None))
         self.label.setText(QCoreApplication.translate("ListProductForm", u"Busca productos por nombre  \u00f3 codigo:", None))
         self.searchButton.setText("")
-        self.frame_3.setStyleSheet(QCoreApplication.translate("ListProductForm", u"font: 700 11pt \"Segoe UI\";", None))
         self.inicioButton.setText("")
         self.label_2.setText(QCoreApplication.translate("ListProductForm", u"  INICIO", None))
-        self.escanearButton.setText("")
-        self.label_6.setText(QCoreApplication.translate("ListProductForm", u" ESCANER", None))
         self.salirButton.setText("")
         self.label_3.setText(QCoreApplication.translate("ListProductForm", u"  SALIR", None))
     # retranslateUi

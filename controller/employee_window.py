@@ -1,15 +1,13 @@
 from datetime import datetime
 from PySide6.QtWidgets import QWidget, QTableWidgetItem, QMessageBox, QInputDialog, QHeaderView, QMainWindow
 from view.employee_window import ListProductFormEmployee
-from model.products import select_all_products, select_product_by_id, select_product_by_name, delete_product, update_qty_product
+from model.products import select_all_products, select_product_by_id, select_product_by_name, delete_product, update_qty_product, select_product_by_id_search
 from model.sells import select_all_sells, insert_sell, select_sell_by_date
 from pys6_msgBoxes import msg_boxes
-from pys6_msgBoxes.input_box import input_msg_box
+from pys6_msgBoxes.input_box import input_msg_box, resource_path
 
 import os
 import platform
-import win32api
-import win32print
 
 from pathlib import Path
 from reportlab.lib.units import cm
@@ -124,32 +122,38 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
 
     def search_product_by_name(self, Nombre):
         data = select_product_by_name(Nombre)
-        self.populate_table(data)
-        self.lineEditSearch.clear()     
+        self.populate_table(data)     
 
     def search_product_by_barcode_scanner(self, Codigo_barras):
         data = select_product_by_id(Codigo_barras)
         return data
     
     def search_product_by_barcode(self, Codigo_barras):
-        data = select_product_by_id(Codigo_barras)
+        data = select_product_by_id_search(Codigo_barras)
         self.populate_table(data)
-        self.lineEditSearch.clear()
+        return data
 
     def search_any(self):
-        parameter = self.lineEditSearch.text()
+        
+        parameter = self.lineEditSearch.text().strip()
 
         if parameter == "":
-            msg_boxes.warning_msg_box('Aviso!','Debe escribir lo que desea buscar')
+            #msg_boxes.warning_msg_box('Aviso!','Debe escribir lo que desea buscar')
+            self.do_sell()
         else:
-            if parameter.isdigit():
+
+            dataCode = self.search_product_by_barcode(parameter)
+            # print(dataCode)
+
+            if not dataCode:
+                self.search_product_by_name(parameter)
+            else:
                 self.search_product_by_barcode(parameter)
                 self.ListProductTable.selectRow(0)
                 self.agregar_carrito_table_click()
-            else:
-                self.search_product_by_name(parameter)
+                
         self.lineEditSearch.clear()
-        self.lineEditSearch.setFocus()
+
                 
     def records_qty(self):
         qty_rows = str(self.ListProductTable.rowCount())
@@ -192,11 +196,11 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
         selected_items = self.ListProductTable.selectedItems()
         if selected_items:
             row = selected_items[0].row()
-            product_id = int(self.ListProductTable.item(row, 4).text())
+            product_id = self.ListProductTable.item(row, 4).text()
             data = select_product_by_id(product_id)
             data_normal = data[0]
-            name = data_normal[0]
-            qty__stock = int(data_normal[1])
+            name = data_normal[1]
+            qty__stock = int(data_normal[2])
 
             while True:
                 quantity = QInputDialog.getText(None, "Cantidad de productos", "Introduce la cantidad:")
@@ -207,7 +211,7 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
                     msg_boxes.warning_msg_box('Aviso!','La cantidad es mayor que la cantidad existente. Inténtelo nuevamente.')
             
             qty = int(quantity[0])
-            price = str(data_normal[3])
+            price = str(data_normal[4])
             if len(price) > 3:
                 price_without_format = int(price.replace(",", ""))
                 code = product_id
@@ -228,7 +232,7 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
         total = self.sum_last_column()
         self.lineEditSell.setText(total)
         self.lineEditSearch.setFocus()
-
+        
     def agregar_punto_miles(self, valor):
         valor = int(valor)
         valor_formateado = "{:,.0f}".format(valor)
@@ -363,34 +367,34 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
         estilo_titulo = ParagraphStyle('Titulo', fontSize=18, alignment=TA_CENTER, spaceAfter=0.5*cm)
         estilo_texto = ParagraphStyle('Texto', fontSize=16, alignment=TA_LEFT, spaceAfter=0.2*cm)
 
+        # logo_path = './assets/logo.png'
+        logo_path = resource_path("assets/logo.png")
+        logo = Image(str(logo_path), width=6.5*cm, height=1.5*cm)
+        logo.hAlign = 'CENTER'
+
         elementos = [
-            Paragraph("<b>VARIEDADES</b>", estilo_titulo),
-            Paragraph("<b>° LA 40 °</b>", estilo_titulo),
+            logo,
             Paragraph("<b>Factura de Venta</b>", estilo_titulo),
             Paragraph(f"Nro factura: {nro_consecutivo}", estilo_texto),
             Paragraph(f"Fecha: {fecha_actual_str}", estilo_texto),
-            Paragraph(f"Nit: 8409905-7", estilo_texto),
-            Paragraph(f"Cel: 313 399 9374", estilo_texto),
-            Paragraph("Direccion: Cll 38ASUR N 39 - 76", estilo_texto),
-            Paragraph(f"<b>Cliente:</b> {name[0]}", estilo_texto),
-            Paragraph(f"<b>Documento:</b> {document[0]}", estilo_texto),
+            Paragraph(f"Nit: 1037651327-1", estilo_texto),
+            Paragraph("Direccion: Calle 48 # 04 06 Copacabana", estilo_texto),
+            Paragraph(f"Cliente: {name[0]}", estilo_texto),
+            Paragraph(f"Documento: {document[0]}", estilo_texto),
             Spacer(1, 0.2*cm),
             Paragraph("<b>Productos:</b>", estilo_texto),
         ]
 
         estilo_nombre_producto = ParagraphStyle('NombreProducto', fontSize=16, alignment=TA_LEFT, spaceAfter=0.2*cm)
 
-        # Estilo para la cantidad y precio
         estilo_cantidad_precio = ParagraphStyle('CantidadPrecio', fontSize=14, alignment=TA_LEFT, spaceAfter=0.5*cm)
-
-        # Agregar productos a la factura
+        
         for producto in productos_vendidos:
             elementos.append(Spacer(1, 0.2*cm))
-            # Nombre del producto
+            
             nombre_producto = Paragraph(f"<b>{producto['nombre']}</b>", estilo_nombre_producto)
             elementos.append(nombre_producto)
             
-            # Cantidad y precio
             cantidad_precio = Paragraph(f"Cantidad: {producto['cantidad']} - Precio: {producto['precio_unitario']}", estilo_cantidad_precio)
             elementos.append(cantidad_precio)
 
@@ -408,11 +412,6 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
             if factura_path .exists():
                 print("El archivo de factura creado en la ubicación especificada.")
                 msg_boxes.correct_msg_box('Correcto!','Factura creada')
-
-                respuesta_imprimir = msg_boxes.warning_check_msg_box('Imprimir factura', '¿Desea imprimir la factura?')
-                if respuesta_imprimir == QMessageBox.Yes:
-                    self.imprimir_factura(factura_path)
-
             else:
                 print("Error: El archivo de factura no se creo en la ubicación especificada.")
         except Exception as e:
@@ -423,13 +422,12 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
     
     def imprimir_factura(self, factura_path):
         try:
-            printer_name = win32print.GetDefaultPrinter()
-            
-            win32api.ShellExecute(0, "print", str(factura_path), None, ".", 0)
-            
-            print(f"Factura enviada a la impresora: {printer_name}")
+            if platform.system() == "Windows":
+                os.startfile(factura_path)
+                os.stat(factura_path)
         except Exception as e:
             print(f"Error al intentar imprimir la factura: {str(e)}")
+        self.lineEditSearch.setFocus()
 
     def do_sell(self):
         confirmacion = msg_boxes.warning_check_msg_box('Confirmar','Confirmar venta')
@@ -449,10 +447,12 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
                 self.update_qty_product_form()
                 msg_boxes.correct_msg_box('Correcto!','Se realizó la venta')
                 self.clean_table_sells()
-                self.generar_factura_venta(self, monto_total, productos_vendidos)
+                respuesta_imprimir = msg_boxes.warning_check_msg_box('Imprimir factura', '¿Desea imprimir la factura?')
+                if respuesta_imprimir == QMessageBox.Yes:
+                    self.generar_factura_venta(self, monto_total, productos_vendidos)
         else :
             msg_boxes.warning_msg_box('Aviso!','No hay productos en el carrito')
-        
+    
 
     def update_qty_product_form(self):
         for row in range(self.ListSellTable.rowCount()):
