@@ -182,12 +182,10 @@ class ListProducWindows(QWidget, ListProductForm):
         parameter = self.lineEditSearch.text().strip()
 
         if parameter == "":
-            #msg_boxes.warning_msg_box('Aviso!','Debe escribir lo que desea buscar')
             self.do_sell()
         else:
 
             dataCode = self.search_product_by_barcode(parameter)
-            # print(dataCode)
 
             if not dataCode:
                 self.search_product_by_name(parameter)

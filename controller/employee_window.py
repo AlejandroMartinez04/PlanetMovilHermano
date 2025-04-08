@@ -61,12 +61,7 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
     def clean_table_sells(self):
         self.ListSellTable.clearContents()
         self.ListSellTable.setRowCount(0)
-        self.lineEditSell.setText(None)
-
-    def refresh_table_from_child_win(self):
-        data = select_all_products_employee()
-        self.populate_table(data)     
-
+        self.lineEditSell.setText(None)   
 
     def table_config(self):
         column_headers = ("Nombre", "Cantidad", "Precio", "Codigo", "Proveedor")
@@ -129,27 +124,21 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
     def search_product_by_barcode(self, Codigo_barras):
         data = select_product_by_id_search(Codigo_barras)
         self.populate_table(data)
-        return data
+        # return data
 
     def search_any(self):
-        
-        parameter = self.lineEditSearch.text().strip()
+        parameter = self.lineEditSearch.text()
 
         if parameter == "":
             #msg_boxes.warning_msg_box('Aviso!','Debe escribir lo que desea buscar')
             self.do_sell()
         else:
-
-            dataCode = self.search_product_by_barcode(parameter)
-            # print(dataCode)
-
-            if not dataCode:
-                self.search_product_by_name(parameter)
-            else:
+            if parameter.isdigit():
                 self.search_product_by_barcode(parameter)
                 self.ListProductTable.selectRow(0)
                 self.agregar_carrito_table_click()
-                
+            else:
+                self.search_product_by_name(parameter)
         self.lineEditSearch.clear()
 
                 
@@ -171,34 +160,23 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
             self.lineEditSell.setText(total)
 
 
-    def agregar_carrito_table_scanner(self, datos):
-        data = 0
-        if data == 0:
-            data_normal = datos[0]
-            name = data_normal[0]
-            qty = 1
-            price = data_normal[3]
-            price_without_format = int(price.replace(",", ""))
-            code = data_normal[4]
-            price_neto = qty * price_without_format
-            precio_neto_format = self.agregar_punto_miles(price_neto)
-
-            data_full = [(code, name, qty, price, precio_neto_format)]
-            self.populate_table2(data_full)
-        self.ListProductTable.clearSelection()
-        total = self.sum_last_column()
-        self.lineEditSell.setText(total)
-
-
     def agregar_carrito_table_click(self):
         selected_items = self.ListProductTable.selectedItems()
         if selected_items:
             row = selected_items[0].row()
-            product_id = int(self.ListProductTable.item(row, 3).text())
-            data = select_product_by_id_employee(product_id)
-            data_normal = data[0]
-            name = data_normal[0]
-            qty__stock = int(data_normal[1])
+            product_id = self.ListProductTable.item(row, 3).text()
+            if product_id.isdigit():
+                product_id = int(self.ListProductTable.item(row, 3).text())
+                data = select_product_by_id_employee(product_id)
+                data_normal = data[0]
+                name = data_normal[0]
+                qty__stock = int(data_normal[1])
+            else:
+                product_id = int(self.ListProductTable.item(row, 4).text())
+                data = select_product_by_id_employee(product_id)
+                data_normal = data[0]
+                name = data_normal[0]
+                qty__stock = int(data_normal[1])
 
             while True:
                 quantity = QInputDialog.getText(None, "Cantidad de productos", "Introduce la cantidad:")
@@ -224,7 +202,7 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
                     precio_neto_format = self.agregar_punto_miles(price_neto)
                 else:
                     precio_neto_format = price_neto
-            data_full = [(code, name, qty, price, precio_neto_format)]
+            data_full = [(code, name, quantity_int, price, precio_neto_format)]
             self.populate_table2(data_full)
         self.ListProductTable.clearSelection()
         total = self.sum_last_column()
