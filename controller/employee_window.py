@@ -431,39 +431,44 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
 
     def do_sell(self):
         confirmacion = msg_boxes.warning_check_msg_box('Confirmar','Confirmar venta')
+        if confirmacion == QMessageBox.Yes:
+            fecha_actual = datetime.now()
+            fecha_actual_str = fecha_actual.strftime('%Y-%m-%d %I:%M:%S %p')
+            monto_total = self.sum_last_column()
 
-        fecha_actual = datetime.now()
-        fecha_actual_str = fecha_actual.strftime('%Y-%m-%d %I:%M:%S %p')
-        monto_total = self.sum_last_column()
-
-        respuesta_descuento = msg_boxes.warning_check_msg_box('Aplicar descuento', '¿Desea aplicar descuento?')
-        if respuesta_descuento == QMessageBox.Yes:
-            porcentaje_descuento = QInputDialog.getText(None, "Porcentaje descuento", "Introduce el porcentaje de descuento:")
-            porcentaje_descuento = int(porcentaje_descuento[0])
-            if porcentaje_descuento:
-                porcentaje_descuento = int(porcentaje_descuento)
-                valor_descuento = int(int(monto_total.replace(",", "")) * (porcentaje_descuento/100))
-                monto_total = int(int(monto_total.replace(",", "")) - valor_descuento)
-                monto_total = self.agregar_punto_miles(monto_total)
-                self.lineEditSell.setText(monto_total)
-
-        ganancia_total = self.ganancia_neta()
-        tipo_pago = 'Efectivo'
-        detalle = str(self.historial_sells())
-        productos_vendidos = self.productos_factura()
-    
-        data = (fecha_actual_str, tipo_pago, monto_total, ganancia_total, detalle)
-        if monto_total > str(0):
-            if confirmacion == QMessageBox.Yes:
-                insert_sell(data)
-                self.update_qty_product_form()
-                msg_boxes.correct_msg_box('Correcto!','Se realizó la venta')
-                self.clean_table_sells()
-                respuesta_imprimir = msg_boxes.warning_check_msg_box('Imprimir factura', '¿Desea imprimir la factura?')
-                if respuesta_imprimir == QMessageBox.Yes:
-                    self.generar_factura_venta(self, monto_total, productos_vendidos)
-        else :
-            msg_boxes.warning_msg_box('Aviso!','No hay productos en el carrito')
+            respuesta_descuento = msg_boxes.warning_check_msg_box('Aplicar descuento', '¿Desea aplicar descuento?')
+            if respuesta_descuento == QMessageBox.Yes:
+                porcentaje_descuento = QInputDialog.getText(None, "Porcentaje descuento", "Introduce el porcentaje de descuento:")
+                porcentaje_descuento = int(porcentaje_descuento[0])
+                if porcentaje_descuento:
+                    porcentaje_descuento = int(porcentaje_descuento)
+                    valor_descuento = int(int(monto_total.replace(",", "")) * (porcentaje_descuento/100))
+                    monto_total = int(int(monto_total.replace(",", "")) - valor_descuento)
+                    monto_total = self.agregar_punto_miles(monto_total)
+                    self.lineEditSell.setText(monto_total)
+                    ganancia_total = self.ganancia_neta()
+                    ganancia_total = int(ganancia_total.replace(",", "")) - valor_descuento
+                    tipo_pago = 'Efectivo'
+                    detalle = str(self.historial_sells())
+                    productos_vendidos = self.productos_factura()
+            else:
+                ganancia_total = self.ganancia_neta()
+                tipo_pago = 'Efectivo'
+                detalle = str(self.historial_sells())
+                productos_vendidos = self.productos_factura()
+                
+            data = (fecha_actual_str, tipo_pago, monto_total, ganancia_total, detalle)
+            if monto_total > str(0):
+                if confirmacion == QMessageBox.Yes:
+                    insert_sell(data)
+                    self.update_qty_product_form()
+                    msg_boxes.correct_msg_box('Correcto!','Se realizó la venta')
+                    self.clean_table_sells()
+                    respuesta_imprimir = msg_boxes.warning_check_msg_box('Imprimir factura', '¿Desea imprimir la factura?')
+                    if respuesta_imprimir == QMessageBox.Yes:
+                        self.generar_factura_venta(self, monto_total, productos_vendidos)
+            else :
+                msg_boxes.warning_msg_box('Aviso!','No hay productos en el carrito')
 
 
     def update_qty_product_form(self):
