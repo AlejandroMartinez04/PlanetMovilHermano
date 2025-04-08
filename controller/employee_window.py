@@ -1,10 +1,10 @@
 from datetime import datetime
 from PySide6.QtWidgets import QWidget, QTableWidgetItem, QMessageBox, QInputDialog, QHeaderView, QMainWindow
 from view.employee_window import ListProductFormEmployee
-from model.products import select_all_products, select_product_by_id, select_product_by_name, delete_product, update_qty_product, select_product_by_id_search
-from model.sells import select_all_sells, insert_sell, select_sell_by_date
+from model.products import select_product_by_name_employee, update_qty_product, select_product_by_id_search, select_all_products_employee, select_product_by_id_employee
+from model.sells import insert_sell
 from pys6_msgBoxes import msg_boxes
-from pys6_msgBoxes.input_box import input_msg_box, resource_path
+from pys6_msgBoxes.input_box import resource_path
 
 import os
 import platform
@@ -26,9 +26,9 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
         self.removecartButton.clicked.connect(self.eliminar_fila_seleccionada)
         self.table_config2()
         self.table_config()
-        self.populate_table(select_all_products())
+        self.populate_table(select_all_products_employee())
         self.searchButton.clicked.connect(self.search_any)
-        self.inicioButton.clicked.connect(lambda:self.populate_table(select_all_products()))
+        self.inicioButton.clicked.connect(lambda:self.populate_table(select_all_products_employee()))
         self.addcartButton.clicked.connect(self.agregar_carrito_table_click)
         self.sellButton.clicked.connect(self.do_sell)
         self.clearButton.clicked.connect(self.clean_table_sells)
@@ -64,15 +64,15 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
         self.lineEditSell.setText(None)
 
     def refresh_table_from_child_win(self):
-        data = select_all_products()
+        data = select_all_products_employee()
         self.populate_table(data)     
 
 
     def table_config(self):
-        column_headers = ("Nombre", "Cantidad", "Precio ingreso", "Precio", "Codigo")
+        column_headers = ("Nombre", "Cantidad", "Precio", "Codigo", "Proveedor")
         self.ListProductTable.setColumnCount(len(column_headers))
         self.ListProductTable.setHorizontalHeaderLabels(column_headers)
-        self.ListProductTable.setColumnWidth(3, 110)
+        # self.ListProductTable.setColumnWidth(3, 110)
         self.ListProductTable.setColumnWidth(1, 90)
         self.ListProductTable.setColumnWidth(2, 110)
         # self.ListProductTable.setColumnWidth(0, 217)
@@ -84,7 +84,6 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
         header.setSectionResizeMode(0, QHeaderView.Stretch)
     
     def populate_table(self, data):
-
         self.ListProductTable.setRowCount(len(data))
         for (index_row, row) in enumerate(data):
             for(index_cell, cell) in enumerate(row):
@@ -92,7 +91,6 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
         self.records_qty()
         self.lineEditSearch.clear()
         self.lineEditSearch.setFocus()
-        
 
     def table_config2(self):
         column_headers = ("Codigo","Nombre","Cantidad","Precio unitario","Precio neto")
@@ -121,11 +119,11 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
     
 
     def search_product_by_name(self, Nombre):
-        data = select_product_by_name(Nombre)
+        data = select_product_by_name_employee(Nombre)
         self.populate_table(data)     
 
     def search_product_by_barcode_scanner(self, Codigo_barras):
-        data = select_product_by_id(Codigo_barras)
+        data = select_product_by_id_employee(Codigo_barras)
         return data
     
     def search_product_by_barcode(self, Codigo_barras):
@@ -196,11 +194,11 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
         selected_items = self.ListProductTable.selectedItems()
         if selected_items:
             row = selected_items[0].row()
-            product_id = self.ListProductTable.item(row, 4).text()
-            data = select_product_by_id(product_id)
+            product_id = int(self.ListProductTable.item(row, 3).text())
+            data = select_product_by_id_employee(product_id)
             data_normal = data[0]
-            name = data_normal[1]
-            qty__stock = int(data_normal[2])
+            name = data_normal[0]
+            qty__stock = int(data_normal[1])
 
             while True:
                 quantity = QInputDialog.getText(None, "Cantidad de productos", "Introduce la cantidad:")
@@ -211,7 +209,7 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
                     msg_boxes.warning_msg_box('Aviso!','La cantidad es mayor que la cantidad existente. Inténtelo nuevamente.')
             
             qty = int(quantity[0])
-            price = str(data_normal[4])
+            price = str(data_normal[2])
             if len(price) > 3:
                 price_without_format = int(price.replace(",", ""))
                 code = product_id
@@ -272,7 +270,7 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
                 product_id = item.text()
                 data = self.search_product_by_barcode_scanner(product_id)
                 data__normal = data[0]
-                profits = data__normal[5]
+                profits = data__normal[4]
                 temp_profits = int(profits) * qty
                 total += temp_profits
         total_format = self.agregar_punto_miles(total)
@@ -478,13 +476,13 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
             if item is not None:
                 qty_selled = int(item.text())
                 product_id = item_id.text()
-                product = select_product_by_id(product_id)
+                product = select_product_by_id_employee(product_id)
                 new_id = int(product_id)
                 data = product[0]
                 old_stock = int(data[1])
                 new_stock = old_stock - qty_selled
                 update_qty_product(new_id, new_stock)
-        self.populate_table(select_all_products())
+        self.populate_table(select_all_products_employee())
 
     def count_products(self, item_id_arrive):
         product_count = 0

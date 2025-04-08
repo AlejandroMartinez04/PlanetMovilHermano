@@ -126,3 +126,45 @@ def update_qty_product(Id_producto, data):
     except Error as e:
         print("Error Updating product: " + str(e))
         return False  # Devolver False en caso de error
+    
+def select_all_products_employee():
+    query = "SELECT Nombre, Cantidad, Precio, Id_producto, Proveedor FROM ProductsV2"
+    data = query_turso(query)
+    
+    # Verifica que data no esté vacío y que contenga el primer elemento
+    if data and isinstance(data, list) and len(data) > 0 and 'results' in data[0]:
+        results = data[0]['results']  # Acceder al primer elemento de la lista
+        
+        # Verifica que haya filas en los resultados
+        if results['rows']:
+            return results['rows']  # Devuelve las filas directamente como una lista de listas
+
+    return []  # Si no hay resultados, devuelve una lista vacía
+
+def select_product_by_id_employee(Id_producto):
+    query = f"SELECT Nombre, Cantidad, Precio, Id_producto, Ganancia FROM ProductsV2 WHERE Id_producto = '{Id_producto}'"
+    data = query_turso(query)
+    # Verifica que data no esté vacío y que contenga el primer elemento
+    if data and isinstance(data, list) and len(data) > 0 and 'results' in data[0]:
+        results = data[0]['results']  # Acceder al primer elemento de la lista
+        
+        # Verifica que haya filas en los resultados
+        if results['rows']:
+            return results['rows']  # Devuelve las filas directamente como una lista de listas
+
+    return []  # Si no hay resultados, devuelve una lista vacía
+
+
+def select_product_by_name_employee(nombre):
+    query = f"SELECT Nombre, Cantidad, Precio, Id_producto, Proveedor FROM products WHERE Nombre LIKE '%{nombre}%'"
+    data = query_turso(query)
+    
+    # Verifica que data no esté vacío y que contenga el primer elemento
+    if data and isinstance(data, list) and len(data) > 0 and 'results' in data[0]:
+        results = data[0]['results']  # Acceder al primer elemento de la lista
+        
+        # Verifica que haya filas en los resultados
+        if results['rows']:
+            return results['rows']  # Devuelve las filas directamente como una lista de listas
+
+    return []  # Si no hay resultados, devuelve una lista vacía
