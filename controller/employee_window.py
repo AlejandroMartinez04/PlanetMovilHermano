@@ -435,6 +435,18 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
         fecha_actual = datetime.now()
         fecha_actual_str = fecha_actual.strftime('%Y-%m-%d %I:%M:%S %p')
         monto_total = self.sum_last_column()
+
+        respuesta_descuento = msg_boxes.warning_check_msg_box('Aplicar descuento', '¿Desea aplicar descuento?')
+        if respuesta_descuento == QMessageBox.Yes:
+            porcentaje_descuento = QInputDialog.getText(None, "Porcentaje descuento", "Introduce el porcentaje de descuento:")
+            porcentaje_descuento = int(porcentaje_descuento[0])
+            if porcentaje_descuento:
+                porcentaje_descuento = int(porcentaje_descuento)
+                valor_descuento = int(int(monto_total.replace(",", "")) * (porcentaje_descuento/100))
+                monto_total = int(int(monto_total.replace(",", "")) - valor_descuento)
+                monto_total = self.agregar_punto_miles(monto_total)
+                self.lineEditSell.setText(monto_total)
+
         ganancia_total = self.ganancia_neta()
         tipo_pago = 'Efectivo'
         detalle = str(self.historial_sells())
@@ -452,7 +464,7 @@ class ListProducWindowEmployee(QWidget, ListProductFormEmployee):
                     self.generar_factura_venta(self, monto_total, productos_vendidos)
         else :
             msg_boxes.warning_msg_box('Aviso!','No hay productos en el carrito')
-    
+
 
     def update_qty_product_form(self):
         for row in range(self.ListSellTable.rowCount()):
