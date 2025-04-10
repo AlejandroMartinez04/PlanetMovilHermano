@@ -87,7 +87,6 @@ def insert_product(data):
     VALUES(?,?,?,?,?,?,?)"""
 
     try:
-        # Ejecutar la consulta usando la función de turso
         insert_success = query_turso2(sql, data)
         if insert_success:
             print("Producto insertado correctamente.")
@@ -96,7 +95,7 @@ def insert_product(data):
             print("Error al insertar el producto.")
     except Error as e:
         print("Error inserting product: " + str(e))
-        return False  # Devolver False en caso de error
+        return False  
     
 def delete_product(Id_producto):
     sql = f"DELETE FROM ProductsV2 WHERE Id_producto = '{Id_producto}'"
@@ -122,7 +121,6 @@ def update_product(Id_producto, data):
                 WHERE Id_producto = {Id_producto}"""
     
     try:
-        # Ejecutar la consulta usando la función de turso
         insert_success = query_turso2(sql, data)
         if insert_success:
             print("Producto actualizado correctamente.")
@@ -131,7 +129,7 @@ def update_product(Id_producto, data):
             print("Error al actualizar el producto.")
     except Error as e:
         print("Error Updating product: " + str(e))
-        return False  # Devolver False en caso de error
+        return False 
     
 def update_qty_product(Id_producto, data):
     sql = f""" UPDATE ProductsV2 SET 
@@ -139,7 +137,6 @@ def update_qty_product(Id_producto, data):
                 WHERE Id_producto = {Id_producto}"""
     
     try:
-        # Ejecutar la consulta usando la función de turso
         insert_success = query_turso(sql)
         if insert_success:
             print("Producto actualizado correctamente.")
@@ -148,5 +145,5 @@ def update_qty_product(Id_producto, data):
             print("Error al actualizar el producto.")
     except Error as e:
         print("Error Updating product: " + str(e))
-        return False  # Devolver False en caso de error
+        return False
     
