@@ -83,9 +83,8 @@ def select_product_by_name_employee(nombre):
         return []
 
 def insert_product(data):
-    sql = f""" INSERT INTO ProductsV2 (Id_producto, Nombre, Cantidad, Precio_ingreso, Precio, Ganancia, Proveedor) 
-    VALUES(?,?,?,?,?,?,?)"""
-
+    sql = "INSERT INTO ProductsV2 (Id_producto, Nombre, Cantidad, Precio_ingreso, Precio, Ganancia, Proveedor) VALUES(?,?,?,?,?,?,?)"
+    
     try:
         insert_success = query_turso2(sql, data)
         if insert_success:
