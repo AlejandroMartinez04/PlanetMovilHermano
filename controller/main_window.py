@@ -120,10 +120,10 @@ class ListProducWindows(QWidget, ListProductForm):
         self.ListProductTable.setHorizontalHeaderLabels(column_headers)
         self.ListProductTable.setColumnWidth(3, 80)
         self.ListProductTable.setColumnWidth(1, 40)
-        self.ListProductTable.setColumnWidth(2, 90)
+        self.ListProductTable.setColumnWidth(2, 60)
         self.ListProductTable.setColumnWidth(0, 317)
         self.ListProductTable.setColumnWidth(4, 30)
-        self.ListProductTable.setColumnWidth(5, 80)
+        self.ListProductTable.setColumnWidth(5, 60)
         self.ListProductTable.verticalHeader().hide()
         self.ListProductTable.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
 
