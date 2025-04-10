@@ -81,15 +81,15 @@ def query_turso2(query, data):
         print("Error al realizar la solicitud:", e)
         return None
     
-    
-def format_turso_args(data):
+
+def format_turso_args(args):
     formatted = []
-    for value in data:
-        if isinstance(value, int):
-            arg_type = "integer"
-        elif isinstance(value, float):
-            arg_type = "real"
+    for val in args:
+        if isinstance(val, int):
+            formatted.append({"type": "integer", "value": str(val)})
+        elif isinstance(val, float):
+            formatted.append({"type": "real", "value": str(val)})
         else:
-            arg_type = "text"  # Por defecto todo lo que no sea número es texto
-        formatted.append({"type": arg_type, "value": value})
+            formatted.append({"type": "text", "value": str(val)})
     return formatted
+
