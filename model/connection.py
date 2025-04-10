@@ -1,5 +1,3 @@
-### ------------------para db en la nube ------------------------#####
-
 import os
 import requests
 import sys
@@ -18,7 +16,6 @@ env_path = resource_path(".env")
 # Cargar variables de entorno
 load_dotenv(dotenv_path=env_path)
 
-# Acceso a las variables
 TURSO_DB_AUTH_TOKEN = os.getenv("TURSO_DB_AUTH_TOKEN")
 TURSO_DB_URL = os.getenv("TURSO_DB_URL")
 
@@ -28,23 +25,29 @@ def query_turso(query):
         "Content-Type": "application/json"
     }
     
-    # Estructura correcta del cuerpo de la solicitud
     body = {
-        "statements": [
-            {
-                "q": query
-            }
-        ]
-    }
+            "requests": [
+                {
+                "type": "execute",
+                "stmt": {
+                    "sql": query,
+                }
+                }
+            ]
+        }
+
     
-    response = requests.post(TURSO_DB_URL, headers=headers, json=body)
-    
-    if response.status_code == 200:
-        print("Conexion a la base de datos exitosa", response.status_code)
-        return response.json()  # Devuelve el resultado de la consulta
-    else:
-        print("Error en la consulta:", response.status_code, response.text)
-        return None    
+    try:
+        response = requests.post(TURSO_DB_URL, headers=headers, json=body)
+        if response.status_code == 200:
+            print("Conexión a la base de datos exitosa", response.status_code)
+            return response.json()  # Devuelve el resultado de la consulta
+        else:
+            print("Error en la consulta:", response.status_code, response.text)
+            return None
+    except requests.exceptions.RequestException as e:
+        print("Error al realizar la solicitud:", e)
+        return None   
 
 def query_turso2(query, data):
     headers = {
@@ -52,21 +55,41 @@ def query_turso2(query, data):
         "Content-Type": "application/json"
     }
     
-    # Estructura correcta del cuerpo de la solicitud
     body = {
-        "statements": [
-            {
-                "q": query,
-                "params": data  # Agregar los argumentos de la consulta aquí
-            }
-        ]
-    }
+            "requests": [
+                {
+                    "type": "execute",
+                    "stmt": {
+                        "sql": query,
+                        "args": format_turso_args(data)
+                    }
+                }
+            ]
+        }
     
-    response = requests.post(TURSO_DB_URL, headers=headers, json=body)
     
-    if response.status_code == 200:
-        print("Conexion a la base de datos exitosa", response.status_code)
-        return response.json()  # Devuelve el resultado de la consulta
-    else:
-        print("Error en la consulta:", response.status_code, response.text)
+    
+    try:
+        response = requests.post(TURSO_DB_URL, headers=headers, json=body)
+        if response.status_code == 200:
+            print("Conexión a la base de datos exitosa", response.status_code)
+            return response.json()  # Devuelve el resultado de la consulta
+        else:
+            print("Error en la consulta:", response.status_code, response.text)
+            return None
+    except requests.exceptions.RequestException as e:
+        print("Error al realizar la solicitud:", e)
         return None
+    
+    
+def format_turso_args(data):
+    formatted = []
+    for value in data:
+        if isinstance(value, int):
+            arg_type = "integer"
+        elif isinstance(value, float):
+            arg_type = "real"
+        else:
+            arg_type = "text"  # Por defecto todo lo que no sea número es texto
+        formatted.append({"type": arg_type, "value": value})
+    return formatted

@@ -1,104 +1,86 @@
 import sqlite3 
 from sqlite3 import Error
 from .connection import query_turso, query_turso2
+from .people import parse_rows
 
 def select_all_products_employee():
     query = "SELECT Nombre, Cantidad, Precio, Id_producto, Proveedor FROM ProductsV2"
     data = query_turso(query)
+    data = parse_rows(data)  # Parsear los datos obtenidos
     
     # Verifica que data no esté vacío y que contenga el primer elemento
-    if data and isinstance(data, list) and len(data) > 0 and 'results' in data[0]:
-        results = data[0]['results']  # Acceder al primer elemento de la lista
-        
-        # Verifica que haya filas en los resultados
-        if results['rows']:
-            return results['rows']  # Devuelve las filas directamente como una lista de listas
-
-    return []  # Si no hay resultados, devuelve una lista vacía
+    if data:
+        return data # Devuelve las filas directamente como una lista de listas
+    else:
+        return []  # Si no hay resultados, devuelve una lista vacía
 
 def select_all_products():
     query = "SELECT Nombre, Cantidad, Precio_ingreso, Precio, Id_producto, Proveedor FROM ProductsV2"
     data = query_turso(query)
+    data = parse_rows(data)  # Parsear los datos obtenidos
     
     # Verifica que data no esté vacío y que contenga el primer elemento
-    if data and isinstance(data, list) and len(data) > 0 and 'results' in data[0]:
-        results = data[0]['results']  # Acceder al primer elemento de la lista
-        
-        # Verifica que haya filas en los resultados
-        if results['rows']:
-            return results['rows']  # Devuelve las filas directamente como una lista de listas
-
-    return []  # Si no hay resultados, devuelve una lista vacía
+    if data:
+        return data # Devuelve las filas directamente como una lista de listas
+    else:
+        return []
 
 
 def select_product_by_id(Id_producto):
     query = f"SELECT Id_producto, Nombre, Cantidad, Precio_ingreso, Precio, Ganancia FROM ProductsV2 WHERE Id_producto = '{Id_producto}'"
     data = query_turso(query)
+    data = parse_rows(data)  # Parsear los datos obtenidos
+    
     # Verifica que data no esté vacío y que contenga el primer elemento
-    if data and isinstance(data, list) and len(data) > 0 and 'results' in data[0]:
-        results = data[0]['results']  # Acceder al primer elemento de la lista
-        
-        # Verifica que haya filas en los resultados
-        if results['rows']:
-            return results['rows']  # Devuelve las filas directamente como una lista de listas
-
-    return []  # Si no hay resultados, devuelve una lista vacía
+    if data:
+        return data # Devuelve las filas directamente como una lista de listas
+    else:
+        return []
 
 def select_product_by_id_employee(Id_producto):
     query = f"SELECT Nombre, Cantidad, Precio, Id_producto, Ganancia FROM ProductsV2 WHERE Id_producto = '{Id_producto}'"
     data = query_turso(query)
+    data = parse_rows(data)  # Parsear los datos obtenidos
+    
     # Verifica que data no esté vacío y que contenga el primer elemento
-    if data and isinstance(data, list) and len(data) > 0 and 'results' in data[0]:
-        results = data[0]['results']  # Acceder al primer elemento de la lista
-        
-        # Verifica que haya filas en los resultados
-        if results['rows']:
-            return results['rows']  # Devuelve las filas directamente como una lista de listas
-
-    return []  # Si no hay resultados, devuelve una lista vacía
+    if data:
+        return data # Devuelve las filas directamente como una lista de listas
+    else:
+        return []
 
 
 def select_product_by_id_search(Id_producto):
     query = f"SELECT Nombre, Cantidad, Precio_ingreso, Precio, Id_producto, Proveedor FROM ProductsV2 WHERE Id_producto = {Id_producto}"
     data = query_turso(query)
+    data = parse_rows(data)  # Parsear los datos obtenidos
     
     # Verifica que data no esté vacío y que contenga el primer elemento
-    if data and isinstance(data, list) and len(data) > 0 and 'results' in data[0]:
-        results = data[0]['results']  # Acceder al primer elemento de la lista
-        
-        # Verifica que haya filas en los resultados
-        if results['rows']:
-            return results['rows']  # Devuelve las filas directamente como una lista de listas
-
-    return []  # Si no hay resultados, devuelve una lista vacía
+    if data:
+        return data # Devuelve las filas directamente como una lista de listas
+    else:
+        return []
 
 def select_product_by_name(nombre):
     query = f"SELECT Nombre, Cantidad, Precio_ingreso, Precio, Id_producto, Proveedor FROM ProductsV2 WHERE Nombre LIKE '%{nombre}%'"
     data = query_turso(query)
+    data = parse_rows(data)  # Parsear los datos obtenidos
     
     # Verifica que data no esté vacío y que contenga el primer elemento
-    if data and isinstance(data, list) and len(data) > 0 and 'results' in data[0]:
-        results = data[0]['results']  # Acceder al primer elemento de la lista
-        
-        # Verifica que haya filas en los resultados
-        if results['rows']:
-            return results['rows']  # Devuelve las filas directamente como una lista de listas
-
-    return []  # Si no hay resultados, devuelve una lista vacía
+    if data:
+        return data # Devuelve las filas directamente como una lista de listas
+    else:
+        return []
 
 def select_product_by_name_employee(nombre):
     query = f"SELECT Nombre, Cantidad, Precio, Id_producto, Proveedor FROM ProductsV2 WHERE Nombre LIKE '%{nombre}%'"
     data = query_turso(query)
+    data = parse_rows(data)  # Parsear los datos obtenidos
     
     # Verifica que data no esté vacío y que contenga el primer elemento
-    if data and isinstance(data, list) and len(data) > 0 and 'results' in data[0]:
-        results = data[0]['results']  # Acceder al primer elemento de la lista
-        
-        # Verifica que haya filas en los resultados
-        if results['rows']:
-            return results['rows']  # Devuelve las filas directamente como una lista de listas
-
-    return []  # Si no hay resultados, devuelve una lista vacía
+    if data:
+        return data # Devuelve las filas directamente como una lista de listas
+    else:
+        return []
 
 def insert_product(data):
     sql = f""" INSERT INTO ProductsV2 (Id_producto, Nombre, Cantidad, Precio_ingreso, Precio, Ganancia, Proveedor) 

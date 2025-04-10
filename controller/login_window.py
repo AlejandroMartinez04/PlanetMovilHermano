@@ -28,25 +28,31 @@ class login_window(QWidget, FormLogin):
         else:
             persona = self.select_person_by_id(username)
             
-            if persona is not None:  # Verificamos que persona no sea None
-                user = persona.get("usuario")  # Accedemos al usuario
-                pw = persona.get("contrasenia")  # Accedemos a la contraseña
-                type = persona.get("tipo")  # Accedemos al tipo
+            found = False
 
-                if username == user and password == pw and type == 'empleado':
-                    self.close()
-                    self.open_employee_view() 
-                elif username == user and password == pw and type == 'admin':
-                    self.close()
-                    self.open_admin_view()    
-                else: 
-                    msg_boxes.error_msg_box('Error!', 'Credenciales incorrectas')
-                    self.clean_inputs()
-                    self.set_focus_on_line_edit()
-            else:
-                msg_boxes.error_msg_box('Error!', 'Usuario no existente')
+            for personas in persona:
+                if persona is not None:
+                    usuario, contrasenia, tipo = persona
+
+                    if username == usuario and password == contrasenia:
+                        found = True
+                        self.close()
+                        if tipo == 'empleado':
+                            self.open_employee_view()
+                        elif tipo == 'admin':
+                            self.open_admin_view()
+                        else:
+                            msg_boxes.error_msg_box('Error!', 'Tipo de usuario no reconocido')
+                        break  # Salimos del for si ya encontramos un match
+
+            if not found:
+                msg_boxes.error_msg_box('Error!', 'Credenciales incorrectas')
                 self.clean_inputs()
                 self.set_focus_on_line_edit()
+
+
+
+            
         
     def set_focus_on_line_edit(self):
         self.userLine.setFocus()
