@@ -27,3 +27,4 @@ def parse_rows(response_json):
     except Exception as e:
         print("Error al procesar las filas:", e)
         return []
+

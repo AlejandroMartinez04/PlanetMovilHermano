@@ -130,7 +130,6 @@ class ListProductForm(object):
         self.label_8.setStyleSheet(u"font: 700 11pt \"Segoe UI\";")
 
         self.horizontalLayout_6.addWidget(self.label_8)
-
         self.frame = QFrame(ListProductForm)
         self.frame.setObjectName(u"frame")
         self.frame.setFrameShape(QFrame.StyledPanel)
@@ -143,14 +142,58 @@ class ListProductForm(object):
         self.labelQty.setStyleSheet(u"font: 700 11pt \"Segoe UI\";")
 
         self.horizontalLayout_6.addWidget(self.frame)
-
-
+        
         self.gridLayout_4.addLayout(self.horizontalLayout_6, 6, 0, 1, 1)
-
+        
         self.horizontalLayout_4 = QHBoxLayout()
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.horizontalLayout_4.setSizeConstraint(QLayout.SetFixedSize)
+        self.horizontalLayout_4.setSizeConstraint(QLayout.SizeConstraint.SetFixedSize)
         self.horizontalLayout_4.setContentsMargins(350, -1, -1, -1)
+        self.verticalLayout_10 = QVBoxLayout()
+        self.verticalLayout_10.setObjectName(u"verticalLayout_10")
+        self.devolverButton = QPushButton(ListProductForm)
+        self.devolverButton.setObjectName(u"devolverButton")
+        self.devolverButton.setEnabled(True)
+        sizePolicy.setHeightForWidth(self.devolverButton.sizePolicy().hasHeightForWidth())
+        self.devolverButton.setSizePolicy(sizePolicy)
+        self.devolverButton.setMinimumSize(QSize(0, 80))
+        self.devolverButton.setMaximumSize(QSize(200, 16777215))
+        font = QFont()
+        font.setFamilies([u"Segoe UI"])
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setItalic(False)
+        self.devolverButton.setFont(font)
+        self.devolverButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.devolverButton.setStyleSheet(u"font: 700 11pt \"Segoe UI\";")
+        icon = QIcon()
+        icon12main = resource_path("assets/newicons/Devolucion.png")
+        icon = QIcon()
+        icon.addFile(icon12main, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.devolverButton.setIcon(icon)
+        self.devolverButton.setIconSize(QSize(90, 50))
+        self.devolverButton.setFlat(True)
+
+        self.verticalLayout_10.addWidget(self.devolverButton)
+
+        self.label_14 = QLabel(ListProductForm)
+        self.label_14.setObjectName(u"label_14")
+        sizePolicy.setHeightForWidth(self.label_14.sizePolicy().hasHeightForWidth())
+        self.label_14.setSizePolicy(sizePolicy)
+        self.label_14.setFont(font)
+        self.label_14.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
+        self.label_14.setStyleSheet(u"font: 700 11pt \"Segoe UI\";")
+
+        self.verticalLayout_10.addWidget(self.label_14)
+
+
+        self.horizontalLayout_4.addLayout(self.verticalLayout_10)
+
+        
+
+        
+        
+        
         self.verticalLayout_8 = QVBoxLayout()
         self.verticalLayout_8.setObjectName(u"verticalLayout_8")
         self.gananciasButton = QPushButton(ListProductForm)
@@ -551,6 +594,8 @@ class ListProductForm(object):
         self.label_8.setText(QCoreApplication.translate("ListProductForm", u"Cantidad de productos:", None))
         self.frame.setStyleSheet(QCoreApplication.translate("ListProductForm", u"font: 700 11pt \"Segoe UI\";", None))
         self.labelQty.setText(QCoreApplication.translate("ListProductForm", u"#", None))
+        self.devolverButton.setText("")
+        self.label_14.setText(QCoreApplication.translate("ListProductForm", u"DEVOLUCION", None))
         self.gananciasButton.setText("")
         self.label_7.setText(QCoreApplication.translate("ListProductForm", u"VER GANANCIAS", None))
         self.escanearButton.setText("")
