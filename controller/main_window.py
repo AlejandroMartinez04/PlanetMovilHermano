@@ -39,6 +39,7 @@ class ListProducWindows(QWidget, ListProductForm):
         self.lineEditSearch.returnPressed.connect(self.searchButton.click)
         self.pushButton.clicked.connect(self.close)
         self.escanearButton.clicked.connect(self.ver_facturas)
+        self.devolverButton.clicked.connect(self.open_new_return_windows)
 
         self.sellButton.setDefault(True)
         self.lineEditSearch.setFocus()
@@ -70,6 +71,12 @@ class ListProducWindows(QWidget, ListProductForm):
     def open_new_product_windows(self):
         from controller.new_product_window import NewProductWindow
         window = NewProductWindow(self)
+        window.show()
+        self.lineEditSearch.setFocus()
+        
+    def open_new_return_windows(self):
+        from controller.devolucion_window import return_Window
+        window = return_Window(self)
         window.show()
         self.lineEditSearch.setFocus()
 

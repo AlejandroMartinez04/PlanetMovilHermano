@@ -1,85 +1,84 @@
 from PySide6.QtWidgets import QWidget
-from view.get_back_sell import returnWindow
+from PySide6.QtCore import Qt
+from view.get_back_sell import get_back_sell
 from pys6_msgBoxes import msg_boxes
 from model.sells import insert_sell
-from model.products import update_product
+from model.products import select_product_by_id, update_qty_product
+from datetime import datetime
 
-class return_Window(QWidget, returnWindow):
+class return_Window(QWidget, get_back_sell):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent = None):
+        super().__init__(parent)
 
         self.setupUi(self)
-        self.set_focus_on_line_edit()
-        self.enviarBtn.clicked.connect(self.check_input)
-        self.cancelarBtn.clicked.connect(self.close)
+        self.setWindowFlag(Qt.Window)
+        self.parent = parent
         
-        self.userLine.returnPressed.connect(self.check_input)
-        self.pwLine.returnPressed.connect(self.check_input)
+        self.AddDevolutionButton.clicked.connect(self.insert_devolution)
+        self.cancelDevolutionButton.clicked.connect(self.close)
 
     def check_inputs(self):
-        name = self.titleLineEdit.text()
-        amount = self.amountSpinBox.value()
-        princeInt = self.priceSaleLineEdit_2.text()
-        priceOut = self.priceSaleLineEdit.text()
-        barcode = self.barcodeLineEdit.text()
+        codeProduct = self.titleLineEdit.text()
+        qty = self.amountSpinBox.value()
+        valueReturn = self.priceDevolutionSellLineEdit.text()
+        description = self.priceDevolutionSellLineEdit_2.text()
 
         errors_count = 0
 
-        if name == "":
-            msg_boxes.warning_msg_box('Aviso!','El campo nombre es obligatorio')
+        if codeProduct == "":
+            msg_boxes.warning_msg_box('Aviso!','El codigo producto es obligatorio')
             # print("El campo nombre es obligatorio")
             errors_count += 1
-        if amount == "":
-            msg_boxes.warning_msg_box('Aviso!','El campo cantidad es obligatorio')
+        if qty == "":
+            msg_boxes.warning_msg_box('Aviso!','La cantidad es obligatoria')
             # print("El campo cantidad es obligatorio")
             errors_count += 1
-        if princeInt == "":
-            msg_boxes.warning_msg_box('Aviso!','El campo precio ingreso es obligatorio')
+        if valueReturn == "":
+            msg_boxes.warning_msg_box('Aviso!','El valor de la devolucion es obligatorio')
             # print("El campo precio ingreso es obligatorio")    
             errors_count += 1    
-        if priceOut == "":
-            msg_boxes.warning_msg_box('Aviso!','El campo precio venta es obligatorio')
+        if description == "":
+            msg_boxes.warning_msg_box('Aviso!','La descripcion es obligatoria')
             # print("El campo precio venta es obligatorio")    
-            errors_count += 1
-        if barcode == "":
-            msg_boxes.warning_msg_box('Aviso!','El campo codigo de barras es obligatorio')
-            # print("El campo codigo de barras es obligatorio")    
             errors_count += 1
 
         if errors_count == 0:
             return True
-
-            
         
-    def set_focus_on_line_edit(self):
-        self.userLine.setFocus()
-
-    def select_person_by_id(self, id):
-        data = select_by_id(id)
-        return data
-
-    def open_admin_view(self):
-        from controller.main_window import ListProducWindows
-        window = ListProducWindows()
+    def insert_devolution(self):
         
-    def edit_product(self):
-        name = self.titleLineEdit.text()
-        amount = str(self.amountSpinBox.value())
-        priceInt = self.priceSaleLineEdit_2.text()
-        priceInt_without_format = int(priceInt.replace(",", ""))
-        priceInt_format = self.agregar_punto_miles(priceInt_without_format)
-        priceOut = self.priceSaleLineEdit.text()
-        priceOut_without_format = int(priceOut.replace(",", ""))
-        priceOut_format = self.agregar_punto_miles(priceOut_without_format)
-        provider = self.providerLineEdit.text()
+        fecha_actual = datetime.now()
+        fecha_actual_str = fecha_actual.strftime('%Y-%m-%d %I:%M:%S %p')
+        
+        if self.check_inputs():
+            codeProduct = self.titleLineEdit.text()
+            qty = str(self.amountSpinBox.value())
+            valueReturn = str("-" + self.priceDevolutionSellLineEdit.text())
+            description = str(self.priceDevolutionSellLineEdit_2.text()+" (Devolución)")
+            payType = "efectivo"
+            profits = 0
 
-        data = [name, amount, priceInt_format, priceOut_format, provider]
+            data = (fecha_actual_str, payType, valueReturn, profits, description)
 
-        if update_product(self.codigo_barras, data) and self.check_inputs():
-            msg_boxes.correct_msg_box('Correcto!','Producto actualizado con exito')
-            self.parent.refresh_table_from_child_win()
-            self.close()
+            if insert_sell(data):
+                
+                product = select_product_by_id(codeProduct)
+                data = product[0]
+                old_stock = int(data[2])
+                new_stock = old_stock + int(qty)
+                update_qty_product(codeProduct, new_stock)
+                
+                msg_boxes.correct_msg_box('Correcto!','Devolucion registrada con exito')
+                self.parent.refresh_table_from_child_win()
+                self.close()
+        
+    def set_focus_on_barcode(self):
+        self.barcodeLineEdit.setFocus()
+
+    # def select_person_by_id(self, id):
+    #     data = select_by_id(id)
+    #     return data
 
     def agregar_punto_miles(self, valor):
         valor = int(valor)
