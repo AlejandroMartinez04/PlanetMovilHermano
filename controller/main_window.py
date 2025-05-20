@@ -287,7 +287,19 @@ class ListProducWindows(QWidget, ListProductForm):
             name = self.ListSellTable.item(row, self.ListSellTable.columnCount() - 4)
             name = name.text()
             if item is not None:
-                data = ('Producto: ' + name + ', cantidad: '+ qty)
+                if "reparacion" in name:
+                    # Solicitar detalles de la reparación
+                    detalles = QInputDialog.getText(
+                        None, 
+                        "Detalles de Reparación",
+                        "Ingrese los detalles de la reparación:"
+                    )
+                    if detalles[0]:
+                        data = ('Producto: ' + name + ', cantidad: '+ qty + ', Detalles: ' + detalles[0])
+                    else:
+                        data = ('Producto: ' + name + ', cantidad: '+ qty)
+                else:
+                    data = ('Producto: ' + name + ', cantidad: '+ qty)
                 data_acumulada += data + '\n'
         return data_acumulada
 
@@ -498,8 +510,8 @@ class ListProducWindows(QWidget, ListProductForm):
                 ganancia_total = self.ganancia_neta()
                 tipo_pago = 'Efectivo'
                 detalle = str(self.historial_sells())
-                productos_vendidos = self.productos_factura()
-                
+                productos_vendidos = self.productos_factura()     
+                                      
             data = (fecha_actual_str, tipo_pago, monto_total, ganancia_total, detalle)
             if monto_total > str(0):
                 if confirmacion == QMessageBox.Yes:
