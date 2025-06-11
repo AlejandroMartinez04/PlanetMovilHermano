@@ -58,6 +58,13 @@ class return_Window(QWidget, get_back_sell):
             description = str(self.priceDevolutionSellLineEdit_2.text()+" (Devolución)")
             payType = "efectivo"
             profits = 0
+            
+            product = select_product_by_id(codeProduct)
+            data = product[0]
+            profitsBacks = int(data[5])
+            profits = profitsBacks * -1
+            
+            print("El valor de la devolucion en ganancia es: ", profits)
 
             data = (fecha_actual_str, payType, valueReturn, profits, description)
 

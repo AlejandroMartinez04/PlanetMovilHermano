@@ -288,18 +288,25 @@ class ListProducWindows(QWidget, ListProductForm):
             name = name.text()
             if item is not None:
                 if "reparacion" in name:
-                    # Solicitar detalles de la reparación
-                    detalles = QInputDialog.getText(
-                        None, 
-                        "Detalles de Reparación",
-                        "Ingrese los detalles de la reparación:"
-                    )
-                    if detalles[0]:
-                        data = ('Producto: ' + name + ', cantidad: '+ qty + ', Detalles: ' + detalles[0])
-                    else:
-                        data = ('Producto: ' + name + ', cantidad: '+ qty)
+                    detalles = ("", False)
+                    
+                    while not detalles[0]:
+                        detalles = QInputDialog.getText(
+                            None, 
+                            "Detalles de Reparación",
+                            "Ingrese los detalles de la reparación:"
+                        )
+
+                        if not detalles[1]:  # El usuario presionó Cancelar
+                            msg_boxes.warning_msg_box('Aviso!', 'Debe ingresar los detalles de la reparación para continuar.')
+                            return ''
+
+                        if not detalles[0].strip():  # Cadena vacía o solo espacios
+                            msg_boxes.warning_msg_box('Aviso!', 'Los detalles de la reparación no pueden estar vacíos.')
+
+                    data = f'Producto: {name}, cantidad: {qty}, Detalles: {detalles[0].strip()}'
                 else:
-                    data = ('Producto: ' + name + ', cantidad: '+ qty)
+                    data = f'Producto: {name}, cantidad: {qty}'
                 data_acumulada += data + '\n'
         return data_acumulada
 
