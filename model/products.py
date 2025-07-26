@@ -84,17 +84,18 @@ def select_product_by_name_employee(nombre):
 
 def insert_product(data):
     sql = "INSERT INTO ProductsV2 (Id_producto, Nombre, Cantidad, Precio_ingreso, Precio, Ganancia, Proveedor) VALUES(?,?,?,?,?,?,?)"
-    
     try:
         insert_success = query_turso2(sql, data)
+        print("Insert Success:", insert_success)
         if insert_success:
             print("Producto insertado correctamente.")
             return True
         else:
-            print("Error al insertar el producto.")
+            print("Error: No se pudo insertar el producto. Es posible que el Id_producto ya exista o haya otro error.")
+            return False
     except Error as e:
         print("Error inserting product: " + str(e))
-        return False  
+        return False
     
 def delete_product(Id_producto):
     sql = f"DELETE FROM ProductsV2 WHERE Id_producto = '{Id_producto}'"

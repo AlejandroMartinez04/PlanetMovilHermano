@@ -75,6 +75,8 @@ class NewProductWindow(QWidget, NewProductForm):
                 self.clean_inputs()
                 self.parent.refresh_table_from_child_win()
                 msg_boxes.correct_msg_box('Correcto!','Producto agregado con exito')
+            else:
+                msg_boxes.error_msg_box('Error!','No se pudo agregar el producto, verifique el codigo de barras o los datos ingresados')
 
     def clean_inputs(self):
         self.titleLineEdit.clear()

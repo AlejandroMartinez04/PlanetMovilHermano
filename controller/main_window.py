@@ -205,7 +205,7 @@ class ListProducWindows(QWidget, ListProductForm):
 
 
     def records_qty(self):
-        qty_rows = str(self.ListProductTable.rowCount())
+        qty_rows = str(self.ListProductTable.rowCount()+2)
         self.labelQty.setText(qty_rows)
 
     def select_row(self, row):

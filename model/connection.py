@@ -67,19 +67,28 @@ def query_turso2(query, data):
             ]
         }
     
-    
-    
     try:
         response = requests.post(TURSO_DB_URL, headers=headers, json=body)
         if response.status_code == 200:
-            print("Conexión a la base de datos exitosa", response.status_code)
-            return response.json()  # Devuelve el resultado de la consulta
+            result = response.json()
+            results = result.get("results", [])
+
+            if results and results[0].get("type") == "ok":
+                print("Inserción a la base de datos exitosa", response.status_code)
+                return True
+            elif results and results[0].get("type") == "error":
+                error_info = results[0].get("error", {})
+                print("Error en la consulta SQL:", error_info.get("message", "Error desconocido"))
+                return False
+            else:
+                print("Respuesta inesperada:", result)
+                return False
         else:
             print("Error en la consulta:", response.status_code, response.text)
-            return None
+            return False
     except requests.exceptions.RequestException as e:
         print("Error al realizar la solicitud:", e)
-        return None
+        return False
     
 
 def format_turso_args(args):
